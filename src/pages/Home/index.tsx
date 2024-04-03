@@ -1,5 +1,6 @@
-import { Play } from 'phosphor-react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { Play } from 'phosphor-react'
 
 import {
   CountdownContainer,
@@ -12,17 +13,35 @@ import {
 } from './styles'
 
 
+
 interface NewCycleFormData {
   task: string,
   minutesAmount: number
 }
 
+interface Cycle extends NewCycleFormData {
+  id: string
+}
+
+
 export function Home() {
+
+  const [cycles, setCycles] = useState<Cycle[]>([])
+  const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
+
+
 
   const { register, handleSubmit, watch, reset } = useForm()
 
   function handleCreateNewCycle(data: NewCycleFormData) {
-    console.log(data)
+    const newCycle: Cycle = {
+      id: String(new Date().getTime()),
+      ...data
+    }
+
+    setCycles(cycles => [...cycles, newCycle])
+    setActiveCycleId(newCycle.id)
+
     reset()
   }
 
